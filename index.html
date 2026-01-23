@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake Spiel</title>
+    <title>Futuristisches Snake</title>
     <style>
         * {
             margin: 0;
@@ -13,164 +13,136 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: #000;
             color: #fff;
-            padding: 10px;
             overflow: hidden;
+            position: relative;
+        }
+        
+        /* Futuristischer Hintergrund-Effekt */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.6; }
         }
         
         .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            padding: 10px;
         }
         
         .game-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
             margin: 0 auto;
         }
         
         .game-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 20, 30, 0.8);
             padding: 12px 15px;
             border-radius: 12px 12px 0 0;
-            border-bottom: 2px solid #4CAF50;
-        }
-        
-        .stats-container {
-            display: flex;
-            gap: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            margin-bottom: 0;
         }
         
         .score-box {
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 8px 20px;
+            background: rgba(0, 40, 60, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
         }
         
         .score-label {
-            font-size: 0.9rem;
-            color: #aaa;
+            font-size: 0.8rem;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
         }
         
         .score-value {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            color: #4CAF50;
-        }
-        
-        .controls-container {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .control-btn {
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        .control-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .control-btn#pauseBtn {
-            background: linear-gradient(135deg, #FF9800, #EF6C00);
+            color: #0ff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            font-family: 'Courier New', monospace;
         }
         
         #gameCanvas {
             display: block;
-            background-color: #0d1525;
+            background-color: rgba(0, 10, 20, 0.9);
             border-radius: 0 0 12px 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), inset 0 0 30px rgba(0, 255, 255, 0.1);
             width: 100%;
             height: auto;
             aspect-ratio: 1 / 1;
         }
         
-        .touch-controls {
-            width: 100%;
-            max-width: 400px;
+        .touch-instructions {
+            color: rgba(0, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
             margin-top: 10px;
+            background: rgba(0, 30, 50, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            max-width: 400px;
+            width: 100%;
         }
         
-        .direction-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-        }
-        
-        .dir-btn {
-            background: linear-gradient(135deg, #333, #222);
-            border: none;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.1s;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-            user-select: none;
-        }
-        
-        .dir-btn:active {
-            background: linear-gradient(135deg, #2196F3, #0D47A1);
-            transform: scale(0.95);
-        }
-        
-        #upBtn {
-            grid-column: 2;
-            grid-row: 1;
-        }
-        
-        #leftBtn {
-            grid-column: 1;
-            grid-row: 2;
-        }
-        
-        #centerBtn {
-            grid-column: 2;
-            grid-row: 2;
-            background: linear-gradient(135deg, #555, #444);
-            font-size: 1.3rem;
-        }
-        
-        #rightBtn {
-            grid-column: 3;
-            grid-row: 2;
-        }
-        
-        #downBtn {
-            grid-column: 2;
-            grid-row: 3;
+        .touch-instructions p {
+            margin: 5px 0;
         }
         
         .game-over {
@@ -179,7 +151,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.85);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -187,152 +159,148 @@
             border-radius: 0 0 12px 12px;
             z-index: 10;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
         
         .game-over h2 {
-            font-size: 2.5rem;
-            color: #f44336;
+            font-size: 2.8rem;
+            color: #f0f;
             margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
         }
         
         .final-score {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: #4CAF50;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #0ff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            font-family: 'Courier New', monospace;
         }
         
-        .mobile-swipe-note {
-            color: #aaa;
-            font-style: italic;
-            margin-top: 8px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-        
-        .instructions {
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-            max-width: 500px;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-        
-        .instructions h3 {
-            color: #4CAF50;
-            margin-bottom: 8px;
+        .restart-btn {
+            background: linear-gradient(135deg, #0ff, #00aaff);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
             font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .restart-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0 0 12px 12px;
+            z-index: 5;
+            backdrop-filter: blur(3px);
+        }
+        
+        .pause-text {
+            font-size: 2.5rem;
+            color: #0ff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .tap-to-continue {
+            color: rgba(0, 255, 255, 0.7);
+            font-size: 1rem;
             text-align: center;
-        }
-        
-        .instructions p {
-            line-height: 1.5;
-            text-align: center;
-        }
-        
-        @media (max-height: 850px) {
-            .instructions {
-                display: none;
-            }
-            
-            .touch-controls {
-                margin-top: 5px;
-            }
-            
-            .direction-pad {
-                width: 200px;
-                height: 200px;
-            }
-        }
-        
-        @media (max-height: 750px) {
-            .mobile-swipe-note {
-                display: none;
-            }
-            
-            .direction-pad {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .dir-btn {
-                font-size: 1.6rem;
-            }
         }
         
         @media (max-height: 700px) {
-            .touch-controls {
+            .touch-instructions {
                 display: none;
-            }
-            
-            body {
-                padding: 5px;
             }
             
             .game-header {
                 padding: 8px 12px;
             }
+            
+            .score-value {
+                font-size: 1.8rem;
+            }
         }
         
         @media (max-width: 480px) {
             .game-header {
-                flex-direction: column;
-                gap: 10px;
+                padding: 8px;
             }
             
-            .direction-pad {
-                width: 180px;
-                height: 180px;
+            .score-box {
+                padding: 6px 15px;
             }
             
-            .stats-container {
-                width: 100%;
-                justify-content: space-around;
+            .score-value {
+                font-size: 1.8rem;
+            }
+            
+            .game-over h2 {
+                font-size: 2.2rem;
+            }
+            
+            .final-score {
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Futuristischer Hintergrund -->
+    <div class="bg-effects">
+        <div class="grid-pattern"></div>
+        <div class="glow-effect"></div>
+    </div>
+    
     <div class="container">
         <div class="game-container">
             <div class="game-header">
-                <div class="stats-container">
-                    <div class="score-box">
-                        <div class="score-label">PUNKTE</div>
-                        <div class="score-value" id="score">0</div>
-                    </div>
-                </div>
-                
-                <div class="controls-container">
-                    <button class="control-btn" id="restartBtn">Neustart</button>
-                    <button class="control-btn" id="pauseBtn">Pause</button>
+                <div class="score-box">
+                    <div class="score-label">Punkte</div>
+                    <div class="score-value" id="score">0</div>
                 </div>
             </div>
             
             <canvas id="gameCanvas"></canvas>
             
+            <div class="pause-overlay" id="pauseOverlay">
+                <div class="pause-text">Pause</div>
+                <div class="tap-to-continue">Tippe aufs Spielfeld um fortzufahren</div>
+            </div>
+            
             <div class="game-over" id="gameOverScreen">
-                <h2>GAME OVER</h2>
+                <h2>Game Over</h2>
                 <div class="final-score" id="finalScore">Punkte: 0</div>
-                <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
+                <button class="restart-btn" id="restartGameBtn">Neustart</button>
             </div>
         </div>
         
-        <div class="touch-controls">
-            <div class="direction-pad">
-                <button class="dir-btn" id="upBtn">↑</button>
-                <button class="dir-btn" id="leftBtn">←</button>
-                <div class="dir-btn" id="centerBtn">Snake</div>
-                <button class="dir-btn" id="rightBtn">→</button>
-                <button class="dir-btn" id="downBtn">↓</button>
-            </div>
-            <p class="mobile-swipe-note">Wische auf dem Spielfeld oder nutze die Tasten</p>
-        </div>
-        
-        <div class="instructions">
-            <h3>5 Früchte gleichzeitig!</h3>
-            <p>Sammle alle 5 bunten Früchte ein. Die Schlange wird nur leicht schneller.</p>
+        <div class="touch-instructions">
+            <p>Wische zum Steuern der Schlange</p>
+            <p>Tippe doppelt für Pause</p>
         </div>
     </div>
 
@@ -342,42 +310,36 @@
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
         const gameOverScreen = document.getElementById('gameOverScreen');
+        const pauseOverlay = document.getElementById('pauseOverlay');
         const finalScoreElement = document.getElementById('finalScore');
-        const restartBtn = document.getElementById('restartBtn');
         const restartGameBtn = document.getElementById('restartGameBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        
-        // Touch-Steuerungselemente
-        const upBtn = document.getElementById('upBtn');
-        const downBtn = document.getElementById('downBtn');
-        const leftBtn = document.getElementById('leftBtn');
-        const rightBtn = document.getElementById('rightBtn');
         
         // Spielvariablen
         let gridSize = 20;
         let gridWidth, gridHeight;
         let snake = [];
-        let foods = []; // Array für mehrere Früchte
+        let foods = [];
         let direction = 'right';
         let nextDirection = 'right';
         let score = 0;
-        let gameSpeed = 120; // Startgeschwindigkeit
-        let minGameSpeed = 80; // Minimale Geschwindigkeit (nicht zu schnell)
+        let gameSpeed = 120;
+        let minGameSpeed = 80;
         let gameRunning = false;
         let gamePaused = false;
         let gameLoop;
         let touchStartX = 0;
         let touchStartY = 0;
+        let lastTapTime = 0;
         
-        // Farben für die verschiedenen Früchte
+        // Futuristische Farben
         const FRUIT_COLORS = [
-            { main: '#FF5252', highlight: '#FF8A80' }, // Rot
-            { main: '#FF9800', highlight: '#FFB74D' }, // Orange
-            { main: '#FFEB3B', highlight: '#FFF176' }, // Gelb
-            { main: '#4CAF50', highlight: '#81C784' }, // Grün
-            { main: '#2196F3', highlight: '#64B5F6' }, // Blau
-            { main: '#9C27B0', highlight: '#BA68C8' }, // Lila
-            { main: '#E91E63', highlight: '#F06292' }  // Pink
+            { main: '#FF00FF', glow: '#FF66FF' }, // Magenta
+            { main: '#00FFFF', glow: '#66FFFF' }, // Cyan
+            { main: '#00FF00', glow: '#66FF66' }, // Neon Grün
+            { main: '#FFFF00', glow: '#FFFF66' }, // Gelb
+            { main: '#FF9900', glow: '#FFCC66' }, // Orange
+            { main: '#9900FF', glow: '#CC66FF' }, // Lila
+            { main: '#00FF99', glow: '#66FFCC' }  // Türkis
         ];
         
         // Canvas-Größe initialisieren
@@ -408,7 +370,7 @@
             score = 0;
             scoreElement.textContent = score;
             
-            // Spielgeschwindigkeit zurücksetzen (nicht so schnell)
+            // Spielgeschwindigkeit zurücksetzen
             gameSpeed = 120;
             
             // Früchte initialisieren (5 Stück)
@@ -420,7 +382,7 @@
             // Spielstatus
             gameRunning = true;
             gamePaused = false;
-            pauseBtn.textContent = "Pause";
+            pauseOverlay.style.display = "none";
             gameOverScreen.style.display = "none";
             
             // Spiel-Loop starten
@@ -431,21 +393,20 @@
             drawGame();
         }
         
-        // Neue Frucht an zufälliger Position platzieren
+        // Neue Frucht platzieren
         function placeNewFood() {
-            let foodOnSnake;
-            let foodOnOtherFood;
+            let foodOnSnake, foodOnOtherFood;
             let newFood;
             
             do {
                 foodOnSnake = false;
                 foodOnOtherFood = false;
                 
-                // Zufällige Position
                 newFood = {
                     x: Math.floor(Math.random() * gridWidth),
                     y: Math.floor(Math.random() * gridHeight),
-                    colorIndex: Math.floor(Math.random() * FRUIT_COLORS.length)
+                    colorIndex: Math.floor(Math.random() * FRUIT_COLORS.length),
+                    pulse: Math.random() * Math.PI * 2 // Zufälliger Puls-Offset
                 };
                 
                 // Prüfen, ob Frucht auf Schlange ist
@@ -468,7 +429,6 @@
                 
             } while (foodOnSnake || foodOnOtherFood);
             
-            // Neue Frucht hinzufügen
             foods.push(newFood);
         }
         
@@ -517,30 +477,24 @@
             for (let i = foods.length - 1; i >= 0; i--) {
                 const food = foods[i];
                 if (head.x === food.x && head.y === food.y) {
-                    // Punktestand erhöhen (jede Frucht gibt 10 Punkte)
                     score += 10;
                     scoreElement.textContent = score;
                     
-                    // Gefressene Frucht entfernen
                     foods.splice(i, 1);
-                    
-                    // Neue Frucht platzieren (immer 5 Früchte im Spiel)
                     placeNewFood();
                     
                     fruitEaten = true;
                     
-                    // Spiel leicht beschleunigen (aber nicht so stark wie vorher)
                     if (gameSpeed > minGameSpeed) {
-                        gameSpeed -= 1; // Nur 1ms schneller statt 2ms
+                        gameSpeed -= 1;
                         clearInterval(gameLoop);
                         gameLoop = setInterval(updateGame, gameSpeed);
                     }
                     
-                    break; // Nur eine Frucht pro Frame fressen
+                    break;
                 }
             }
             
-            // Wenn keine Frucht gefressen wurde, Schwanz entfernen
             if (!fruitEaten) {
                 snake.pop();
             }
@@ -548,23 +502,29 @@
             drawGame();
         }
         
-        // Spiel zeichnen mit Blau-Grün Farbübergang
+        // Spiel zeichnen mit futuristischem Design
         function drawGame() {
-            // Hintergrund zeichnen
-            ctx.fillStyle = '#0d1525';
+            // Futuristischen Raster-Hintergrund zeichnen
+            drawFuturisticBackground();
+            
+            // Schlange zeichnen mit futuristischem Effekt
+            drawFuturisticSnake();
+            
+            // Früchte zeichnen mit Glow-Effekt
+            drawFuturisticFoods();
+        }
+        
+        // Futuristischer Hintergrund
+        function drawFuturisticBackground() {
+            // Dunkler Hintergrund
+            ctx.fillStyle = 'rgba(0, 5, 15, 0.95)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Gitter zeichnen
-            ctx.strokeStyle = '#1a2639';
+            // Feinmaschiges Raster
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
             ctx.lineWidth = 0.5;
             
-            for (let x = 0; x <= gridWidth; x++) {
-                ctx.beginPath();
-                ctx.moveTo(x * gridSize, 0);
-                ctx.lineTo(x * gridSize, canvas.height);
-                ctx.stroke();
-            }
-            
+            // Horizontale Linien
             for (let y = 0; y <= gridHeight; y++) {
                 ctx.beginPath();
                 ctx.moveTo(0, y * gridSize);
@@ -572,159 +532,243 @@
                 ctx.stroke();
             }
             
-            // Schlange zeichnen mit Blau-Grün Farbverlauf
+            // Vertikale Linien
+            for (let x = 0; x <= gridWidth; x++) {
+                ctx.beginPath();
+                ctx.moveTo(x * gridSize, 0);
+                ctx.lineTo(x * gridSize, canvas.height);
+                ctx.stroke();
+            }
+            
+            // Glow-Punkte an den Gitter-Kreuzungen
+            ctx.fillStyle = 'rgba(0, 255, 255, 0.05)';
+            for (let x = 0; x <= gridWidth; x++) {
+                for (let y = 0; y <= gridHeight; y++) {
+                    ctx.beginPath();
+                    ctx.arc(x * gridSize, y * gridSize, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        // Futuristische Schlange zeichnen
+        function drawFuturisticSnake() {
+            const time = Date.now() * 0.01; // Für Animationseffekte
+            
             for (let i = 0; i < snake.length; i++) {
                 const segment = snake[i];
+                const segmentTime = time - i * 0.3; // Wellen-Effekt entlang der Schlange
                 
-                // Berechne den Fortschritt im Farbverlauf (0 = Kopf, 1 = Schwanz)
+                // Farbverlauf von Cyan zu Magenta
                 const progress = i / Math.max(snake.length - 1, 1);
+                const hue = 180 + progress * 180; // 180° (Cyan) zu 360° (Magenta)
+                const color = `hsl(${hue}, 100%, ${50 + Math.sin(segmentTime) * 10}%)`;
                 
-                // Erstelle Farbverlauf von Blau zu Grün
-                const gradient = ctx.createLinearGradient(
-                    segment.x * gridSize, 
-                    segment.y * gridSize, 
-                    segment.x * gridSize + gridSize, 
-                    segment.y * gridSize + gridSize
+                // Glow-Effekt
+                const glowRadius = gridSize * 0.7;
+                const gradient = ctx.createRadialGradient(
+                    segment.x * gridSize + gridSize/2,
+                    segment.y * gridSize + gridSize/2,
+                    0,
+                    segment.x * gridSize + gridSize/2,
+                    segment.y * gridSize + gridSize/2,
+                    glowRadius
                 );
                 
-                if (i === 0) {
-                    // Kopf: Helleres Grün
-                    gradient.addColorStop(0, '#4CAF50');  // Hellgrün
-                    gradient.addColorStop(1, '#2E7D32');  // Dunkelgrün
-                } else {
-                    // Körper: Verlauf von Blau zu Grün basierend auf Position
-                    // Je näher am Kopf, desto mehr Grün, je näher am Schwanz, desto mehr Blau
-                    const blueToGreenRatio = 1 - progress; // 1 = viel Blau, 0 = viel Grün
-                    
-                    // Berechne RGB-Werte für Blau (0, 122, 255) und Grün (76, 175, 80)
-                    const blueR = 0, blueG = 122, blueB = 255;
-                    const greenR = 76, greenG = 175, greenB = 80;
-                    
-                    // Interpoliere zwischen Blau und Grün basierend auf Position
-                    const r = Math.round(blueR * blueToGreenRatio + greenR * progress);
-                    const g = Math.round(blueG * blueToGreenRatio + greenG * progress);
-                    const b = Math.round(blueB * blueToGreenRatio + greenB * progress);
-                    
-                    const startColor = `rgb(${r}, ${g}, ${b})`;
-                    
-                    // Dunklere Version für den zweiten Farbstopp
-                    const endColor = `rgb(${Math.max(0, r - 40)}, ${Math.max(0, g - 40)}, ${Math.max(0, b - 40)})`;
-                    
-                    gradient.addColorStop(0, startColor);
-                    gradient.addColorStop(1, endColor);
-                }
+                gradient.addColorStop(0, color);
+                gradient.addColorStop(0.5, color.replace('100%', '70%').replace('50%', '40%'));
+                gradient.addColorStop(1, 'transparent');
                 
                 ctx.fillStyle = gradient;
-                ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+                ctx.fillRect(
+                    segment.x * gridSize - glowRadius/2 + gridSize/2,
+                    segment.y * gridSize - glowRadius/2 + gridSize/2,
+                    glowRadius,
+                    glowRadius
+                );
                 
-                // Rahmen für jedes Segment
-                ctx.strokeStyle = i === 0 ? '#1B5E20' : 'rgba(255, 255, 255, 0.1)';
+                // Hauptsegment
+                ctx.fillStyle = color;
+                ctx.fillRect(
+                    segment.x * gridSize + 2,
+                    segment.y * gridSize + 2,
+                    gridSize - 4,
+                    gridSize - 4
+                );
+                
+                // Innere Glow
+                ctx.fillStyle = i === 0 ? '#FFFFFF' : 'rgba(255, 255, 255, 0.3)';
+                ctx.fillRect(
+                    segment.x * gridSize + 4,
+                    segment.y * gridSize + 4,
+                    gridSize - 8,
+                    gridSize - 8
+                );
+                
+                // Segment-Rand
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
                 ctx.lineWidth = 1;
-                ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+                ctx.strokeRect(
+                    segment.x * gridSize + 2,
+                    segment.y * gridSize + 2,
+                    gridSize - 4,
+                    gridSize - 4
+                );
             }
             
-            // Augen für den Kopf zeichnen
-            const head = snake[0];
-            ctx.fillStyle = '#FFF';
-            
-            let eye1X, eye1Y, eye2X, eye2Y;
-            
-            switch(direction) {
-                case 'right':
-                    eye1X = head.x * gridSize + gridSize - 6;
-                    eye1Y = head.y * gridSize + 5;
-                    eye2X = head.x * gridSize + gridSize - 6;
-                    eye2Y = head.y * gridSize + gridSize - 5;
-                    break;
-                case 'left':
-                    eye1X = head.x * gridSize + 6;
-                    eye1Y = head.y * gridSize + 5;
-                    eye2X = head.x * gridSize + 6;
-                    eye2Y = head.y * gridSize + gridSize - 5;
-                    break;
-                case 'up':
-                    eye1X = head.x * gridSize + 5;
-                    eye1Y = head.y * gridSize + 6;
-                    eye2X = head.x * gridSize + gridSize - 5;
-                    eye2Y = head.y * gridSize + 6;
-                    break;
-                case 'down':
-                    eye1X = head.x * gridSize + 5;
-                    eye1Y = head.y * gridSize + gridSize - 6;
-                    eye2X = head.x * gridSize + gridSize - 5;
-                    eye2Y = head.y * gridSize + gridSize - 6;
-                    break;
+            // Augen für den Kopf
+            if (snake.length > 0) {
+                const head = snake[0];
+                ctx.fillStyle = '#FFFFFF';
+                
+                // Augen positionieren basierend auf Richtung
+                let eyeOffsetX = 0, eyeOffsetY = 0;
+                switch(direction) {
+                    case 'right':
+                        eyeOffsetX = 5;
+                        eyeOffsetY = 0;
+                        break;
+                    case 'left':
+                        eyeOffsetX = -5;
+                        eyeOffsetY = 0;
+                        break;
+                    case 'up':
+                        eyeOffsetX = 0;
+                        eyeOffsetY = -5;
+                        break;
+                    case 'down':
+                        eyeOffsetX = 0;
+                        eyeOffsetY = 5;
+                        break;
+                }
+                
+                // Augen mit Glow
+                const eyeGlow = ctx.createRadialGradient(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 - 3,
+                    0,
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 - 3,
+                    8
+                );
+                eyeGlow.addColorStop(0, '#FFFFFF');
+                eyeGlow.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = eyeGlow;
+                ctx.beginPath();
+                ctx.arc(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 - 3,
+                    8, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                // Augäpfel
+                ctx.fillStyle = '#00FFFF';
+                ctx.beginPath();
+                ctx.arc(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 - 3,
+                    3, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                // Zweites Auge
+                const eyeGlow2 = ctx.createRadialGradient(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 + 3,
+                    0,
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 + 3,
+                    8
+                );
+                eyeGlow2.addColorStop(0, '#FFFFFF');
+                eyeGlow2.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = eyeGlow2;
+                ctx.beginPath();
+                ctx.arc(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 + 3,
+                    8, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                ctx.fillStyle = '#00FFFF';
+                ctx.beginPath();
+                ctx.arc(
+                    head.x * gridSize + gridSize/2 + eyeOffsetX,
+                    head.y * gridSize + gridSize/2 + 3,
+                    3, 0, Math.PI * 2
+                );
+                ctx.fill();
             }
-            
-            ctx.beginPath();
-            ctx.arc(eye1X, eye1Y, 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.arc(eye2X, eye2Y, 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Alle Früchte zeichnen
-            drawFoods();
-            
-            // Farbverlauf-Indikator zeichnen
-            drawColorIndicator();
         }
         
-        // Alle Früchte zeichnen
-        function drawFoods() {
+        // Futuristische Früchte zeichnen
+        function drawFuturisticFoods() {
+            const time = Date.now() * 0.001;
+            
             for (let food of foods) {
+                const foodTime = time + food.pulse;
+                const pulseSize = Math.sin(foodTime * 3) * 2 + 4;
+                const pulseGlow = Math.sin(foodTime * 3) * 0.3 + 0.7;
                 const color = FRUIT_COLORS[food.colorIndex];
+                const centerX = food.x * gridSize + gridSize/2;
+                const centerY = food.y * gridSize + gridSize/2;
                 
-                // Hauptfarbe der Frucht
+                // Äußerer Glow
+                const outerGlow = ctx.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, gridSize
+                );
+                outerGlow.addColorStop(0, color.main);
+                outerGlow.addColorStop(0.5, color.main.replace(')', ', 0.3)'));
+                outerGlow.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = outerGlow;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, gridSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Mittlerer Glow
+                const middleGlow = ctx.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, gridSize * 0.7
+                );
+                middleGlow.addColorStop(0, color.glow);
+                middleGlow.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = middleGlow;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, gridSize * 0.7, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Kern der Frucht
                 ctx.fillStyle = color.main;
                 ctx.beginPath();
-                const foodCenterX = food.x * gridSize + gridSize / 2;
-                const foodCenterY = food.y * gridSize + gridSize / 2;
-                ctx.arc(foodCenterX, foodCenterY, gridSize / 2 - 2, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY, gridSize/2 - pulseSize, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Glanzpunkt auf der Frucht
-                ctx.fillStyle = color.highlight;
+                // Pulsierender innerer Kern
+                ctx.fillStyle = '#FFFFFF';
                 ctx.beginPath();
-                ctx.arc(foodCenterX - 3, foodCenterY - 3, 2, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Optional: Kleiner Stern in der Mitte für bessere Sichtbarkeit
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.beginPath();
-                ctx.arc(foodCenterX, foodCenterY, 1, 0, Math.PI * 2);
-                ctx.fill();
+                // Datenpartikel um die Frucht
+                ctx.fillStyle = color.glow;
+                for (let i = 0; i < 8; i++) {
+                    const angle = foodTime + i * Math.PI / 4;
+                    const radius = gridSize/2 + Math.sin(foodTime * 5 + i) * 2;
+                    const particleX = centerX + Math.cos(angle) * radius;
+                    const particleY = centerY + Math.sin(angle) * radius;
+                    
+                    ctx.beginPath();
+                    ctx.arc(particleX, particleY, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
-        }
-        
-        // Farbverlauf-Indikator zeichnen
-        function drawColorIndicator() {
-            const indicatorSize = 60;
-            const padding = 10;
-            
-            // Zeichne einen kleinen Farbverlauf-Indikator in der unteren linken Ecke
-            const gradient = ctx.createLinearGradient(
-                padding, 
-                canvas.height - padding - indicatorSize, 
-                padding + indicatorSize, 
-                canvas.height - padding
-            );
-            
-            // Farbverlauf von Blau zu Grün
-            gradient.addColorStop(0, '#2196F3');  // Blau
-            gradient.addColorStop(0.5, '#4CAF50'); // Mittel: Blau-Grün Mischung
-            gradient.addColorStop(1, '#2E7D32');  // Grün
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(padding, canvas.height - padding - indicatorSize, indicatorSize, indicatorSize);
-            
-            // Beschriftung
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.font = '10px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('Farbverlauf:', padding, canvas.height - padding - indicatorSize - 5);
-            ctx.fillText('Blau → Grün', padding, canvas.height - padding + 12);
         }
         
         // Spielende
@@ -736,84 +780,33 @@
             gameOverScreen.style.display = "flex";
         }
         
-        // Tastensteuerung
-        function handleKeyDown(e) {
-            if ([37, 38, 39, 40].includes(e.keyCode)) {
-                e.preventDefault();
-            }
-            
-            switch(e.key) {
-                case 'ArrowUp':
-                    if (direction !== 'down') nextDirection = 'up';
-                    break;
-                case 'ArrowDown':
-                    if (direction !== 'up') nextDirection = 'down';
-                    break;
-                case 'ArrowLeft':
-                    if (direction !== 'right') nextDirection = 'left';
-                    break;
-                case 'ArrowRight':
-                    if (direction !== 'left') nextDirection = 'right';
-                    break;
-                case ' ':
-                    togglePause();
-                    break;
-                case 'r':
-                case 'R':
-                    initGame();
-                    break;
-            }
-        }
-        
-        // Touch-Steuerung für Buttons
+        // Touch-Steuerung
         function setupTouchControls() {
-            upBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (direction !== 'down') nextDirection = 'up';
-            });
+            let lastTouchTime = 0;
             
-            downBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (direction !== 'up') nextDirection = 'down';
-            });
-            
-            leftBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (direction !== 'right') nextDirection = 'left';
-            });
-            
-            rightBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (direction !== 'left') nextDirection = 'right';
-            });
-            
-            upBtn.addEventListener('click', () => {
-                if (direction !== 'down') nextDirection = 'up';
-            });
-            
-            downBtn.addEventListener('click', () => {
-                if (direction !== 'up') nextDirection = 'down';
-            });
-            
-            leftBtn.addEventListener('click', () => {
-                if (direction !== 'right') nextDirection = 'left';
-            });
-            
-            rightBtn.addEventListener('click', () => {
-                if (direction !== 'left') nextDirection = 'right';
-            });
-            
-            // Touch-Gesten für Wischsteuerung
+            // Wischsteuerung für die Schlange
             canvas.addEventListener('touchstart', (e) => {
-                if (!gameRunning || gamePaused) return;
+                if (!gameRunning) return;
                 
                 e.preventDefault();
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTouchTime;
+                
+                // Doppeltipp für Pause
+                if (tapLength < 300 && tapLength > 0) {
+                    togglePause();
+                    lastTouchTime = 0;
+                    return;
+                }
+                
+                lastTouchTime = currentTime;
+                
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
             });
             
             canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Verhindert Scrollen
             });
             
             canvas.addEventListener('touchend', (e) => {
@@ -826,14 +819,17 @@
                 const dx = touchEndX - touchStartX;
                 const dy = touchEndY - touchStartY;
                 
+                // Nur auf signifikante Bewegungen reagieren
                 if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
                     if (Math.abs(dx) > Math.abs(dy)) {
+                        // Horizontale Bewegung
                         if (dx > 0 && direction !== 'left') {
                             nextDirection = 'right';
                         } else if (dx < 0 && direction !== 'right') {
                             nextDirection = 'left';
                         }
                     } else {
+                        // Vertikale Bewegung
                         if (dy > 0 && direction !== 'up') {
                             nextDirection = 'down';
                         } else if (dy < 0 && direction !== 'down') {
@@ -845,6 +841,12 @@
                 touchStartX = 0;
                 touchStartY = 0;
             });
+            
+            // Tippen auf Pause-Overlay um fortzufahren
+            pauseOverlay.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                togglePause();
+            });
         }
         
         // Pause umschalten
@@ -852,23 +854,19 @@
             if (!gameRunning) return;
             
             gamePaused = !gamePaused;
-            pauseBtn.textContent = gamePaused ? "Weiter" : "Pause";
             
             if (gamePaused) {
+                pauseOverlay.style.display = "flex";
                 clearInterval(gameLoop);
             } else {
+                pauseOverlay.style.display = "none";
                 gameLoop = setInterval(updateGame, gameSpeed);
             }
         }
         
         // Event-Listener initialisieren
         function initEventListeners() {
-            document.addEventListener('keydown', handleKeyDown);
-            
-            restartBtn.addEventListener('click', initGame);
             restartGameBtn.addEventListener('click', initGame);
-            pauseBtn.addEventListener('click', togglePause);
-            
             setupTouchControls();
             
             window.addEventListener('resize', () => {
