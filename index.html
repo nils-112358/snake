@@ -56,13 +56,13 @@
             gap: 20px;
         }
         
-        .score-box, .highscore-box {
+        .score-box {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         
-        .score-label, .highscore-label {
+        .score-label {
             font-size: 0.9rem;
             color: #aaa;
         }
@@ -71,12 +71,6 @@
             font-size: 2rem;
             font-weight: bold;
             color: #4CAF50;
-        }
-        
-        .highscore-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2196F3;
         }
         
         .controls-container {
@@ -179,61 +173,6 @@
             grid-row: 3;
         }
         
-        .highscore-section {
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-            max-width: 500px;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-        
-        .highscore-section h2 {
-            color: #2196F3;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-        
-        .highscore-list {
-            max-height: 120px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
-        
-        .highscore-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 10px;
-            background-color: rgba(255, 255, 255, 0.05);
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-        
-        .highscore-item:nth-child(odd) {
-            background-color: rgba(255, 255, 255, 0.08);
-        }
-        
-        .highscore-rank {
-            color: #4CAF50;
-            font-weight: bold;
-            min-width: 30px;
-        }
-        
-        .highscore-name {
-            flex-grow: 1;
-            text-align: left;
-            padding: 0 10px;
-        }
-        
-        .highscore-points {
-            color: #2196F3;
-            font-weight: bold;
-            min-width: 60px;
-            text-align: right;
-        }
-        
         .game-over {
             position: absolute;
             top: 0;
@@ -258,44 +197,8 @@
         
         .final-score {
             font-size: 1.8rem;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             color: #4CAF50;
-        }
-        
-        .new-highscore {
-            font-size: 1.5rem;
-            color: #2196F3;
-            margin-bottom: 15px;
-            font-weight: bold;
-            display: none;
-        }
-        
-        .name-input-container {
-            margin: 15px 0;
-            width: 80%;
-            max-width: 300px;
-            display: none;
-        }
-        
-        .name-input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 2px solid #4CAF50;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            text-align: center;
-        }
-        
-        .name-input::placeholder {
-            color: #aaa;
-        }
-        
-        .game-over-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
         }
         
         .mobile-swipe-note {
@@ -306,18 +209,44 @@
             font-size: 0.9rem;
         }
         
-        @media (max-height: 900px) {
-            .highscore-section {
-                padding: 12px;
+        .instructions {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            max-width: 500px;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        
+        .instructions h3 {
+            color: #4CAF50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .instructions p {
+            line-height: 1.5;
+            text-align: center;
+        }
+        
+        @media (max-height: 850px) {
+            .instructions {
+                display: none;
+            }
+            
+            .touch-controls {
                 margin-top: 5px;
             }
             
-            .highscore-list {
-                max-height: 100px;
+            .direction-pad {
+                width: 200px;
+                height: 200px;
             }
         }
         
-        @media (max-height: 800px) {
+        @media (max-height: 750px) {
             .mobile-swipe-note {
                 display: none;
             }
@@ -329,10 +258,6 @@
             
             .dir-btn {
                 font-size: 1.6rem;
-            }
-            
-            .highscore-section {
-                display: none;
             }
         }
         
@@ -377,10 +302,6 @@
                         <div class="score-label">PUNKTE</div>
                         <div class="score-value" id="score">0</div>
                     </div>
-                    <div class="highscore-box">
-                        <div class="highscore-label">BESTE</div>
-                        <div class="highscore-value" id="highscore">0</div>
-                    </div>
                 </div>
                 
                 <div class="controls-container">
@@ -394,16 +315,7 @@
             <div class="game-over" id="gameOverScreen">
                 <h2>GAME OVER</h2>
                 <div class="final-score" id="finalScore">Punkte: 0</div>
-                <div class="new-highscore" id="newHighscoreMessage">NEUER REKORD!</div>
-                
-                <div class="name-input-container" id="nameInputContainer">
-                    <input type="text" class="name-input" id="playerNameInput" placeholder="Dein Name" maxlength="15">
-                </div>
-                
-                <div class="game-over-buttons">
-                    <button class="control-btn" id="saveScoreBtn">Punkte speichern</button>
-                    <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
-                </div>
+                <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
             </div>
         </div>
         
@@ -418,26 +330,9 @@
             <p class="mobile-swipe-note">Wische auf dem Spielfeld oder nutze die Tasten</p>
         </div>
         
-        <div class="highscore-section">
-            <h2>BESTENLISTE</h2>
-            <div class="highscore-list" id="highscoreList">
-                <!-- Highscores werden hier dynamisch geladen -->
-                <div class="highscore-item">
-                    <span class="highscore-rank">1.</span>
-                    <span class="highscore-name">Champion</span>
-                    <span class="highscore-points">500</span>
-                </div>
-                <div class="highscore-item">
-                    <span class="highscore-rank">2.</span>
-                    <span class="highscore-name">Profi</span>
-                    <span class="highscore-points">300</span>
-                </div>
-                <div class="highscore-item">
-                    <span class="highscore-rank">3.</span>
-                    <span class="highscore-name">Spieler</span>
-                    <span class="highscore-points">200</span>
-                </div>
-            </div>
+        <div class="instructions">
+            <h3>5 Früchte gleichzeitig!</h3>
+            <p>Sammle alle 5 bunten Früchte ein. Die Schlange wird nur leicht schneller.</p>
         </div>
     </div>
 
@@ -446,16 +341,10 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
-        const highscoreElement = document.getElementById('highscore');
         const gameOverScreen = document.getElementById('gameOverScreen');
         const finalScoreElement = document.getElementById('finalScore');
-        const newHighscoreMessage = document.getElementById('newHighscoreMessage');
-        const nameInputContainer = document.getElementById('nameInputContainer');
-        const playerNameInput = document.getElementById('playerNameInput');
-        const highscoreList = document.getElementById('highscoreList');
         const restartBtn = document.getElementById('restartBtn');
         const restartGameBtn = document.getElementById('restartGameBtn');
-        const saveScoreBtn = document.getElementById('saveScoreBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         
         // Touch-Steuerungselemente
@@ -468,128 +357,28 @@
         let gridSize = 20;
         let gridWidth, gridHeight;
         let snake = [];
-        let food = {};
+        let foods = []; // Array für mehrere Früchte
         let direction = 'right';
         let nextDirection = 'right';
         let score = 0;
-        let gameSpeed = 120;
+        let gameSpeed = 120; // Startgeschwindigkeit
+        let minGameSpeed = 80; // Minimale Geschwindigkeit (nicht zu schnell)
         let gameRunning = false;
         let gamePaused = false;
         let gameLoop;
         let touchStartX = 0;
         let touchStartY = 0;
         
-        // Highscore-Variablen
-        let highscores = [];
-        let currentHighscore = 0;
-        let isNewHighscore = false;
-        
-        // Local Storage Schlüssel
-        const HIGHSCORE_STORAGE_KEY = 'snakeHighscores';
-        
-        // Highscores aus Local Storage laden
-        function loadHighscores() {
-            const savedHighscores = localStorage.getItem(HIGHSCORE_STORAGE_KEY);
-            if (savedHighscores) {
-                highscores = JSON.parse(savedHighscores);
-            } else {
-                // Standard-Highscores, falls keine gespeichert sind
-                highscores = [
-                    { name: "Champion", score: 500 },
-                    { name: "Profi", score: 300 },
-                    { name: "Spieler", score: 200 },
-                    { name: "Anfänger", score: 100 },
-                    { name: "Neuling", score: 50 }
-                ];
-                saveHighscores();
-            }
-            
-            updateHighscoreDisplay();
-            updateCurrentHighscore();
-        }
-        
-        // Highscores in Local Storage speichern
-        function saveHighscores() {
-            localStorage.setItem(HIGHSCORE_STORAGE_KEY, JSON.stringify(highscores));
-        }
-        
-        // Highscore-Anzeige aktualisieren
-        function updateHighscoreDisplay() {
-            // Sortiere Highscores absteigend nach Punktzahl
-            highscores.sort((a, b) => b.score - a.score);
-            
-            // Zeige nur die Top 10 an
-            const topHighscores = highscores.slice(0, 10);
-            
-            // Leere die aktuelle Liste
-            highscoreList.innerHTML = '';
-            
-            // Füge jeden Highscore zur Liste hinzu
-            topHighscores.forEach((highscore, index) => {
-                const highscoreItem = document.createElement('div');
-                highscoreItem.className = 'highscore-item';
-                
-                const rank = document.createElement('span');
-                rank.className = 'highscore-rank';
-                rank.textContent = `${index + 1}.`;
-                
-                const name = document.createElement('span');
-                name.className = 'highscore-name';
-                name.textContent = highscore.name;
-                
-                const points = document.createElement('span');
-                points.className = 'highscore-points';
-                points.textContent = highscore.score;
-                
-                highscoreItem.appendChild(rank);
-                highscoreItem.appendChild(name);
-                highscoreItem.appendChild(points);
-                
-                highscoreList.appendChild(highscoreItem);
-            });
-        }
-        
-        // Aktuellen Highscore (höchste Punktzahl) aktualisieren
-        function updateCurrentHighscore() {
-            if (highscores.length > 0) {
-                currentHighscore = Math.max(...highscores.map(h => h.score));
-                highscoreElement.textContent = currentHighscore;
-            } else {
-                currentHighscore = 0;
-                highscoreElement.textContent = '0';
-            }
-        }
-        
-        // Prüfen, ob der aktuelle Score ein Highscore ist
-        function checkIfNewHighscore() {
-            // Mindestens Platz 10 in der Bestenliste oder höher als der niedrigste Highscore
-            if (highscores.length < 10) {
-                return true;
-            }
-            
-            const lowestHighscore = highscores.reduce((min, h) => h.score < min ? h.score : min, highscores[0].score);
-            return score > lowestHighscore;
-        }
-        
-        // Score zur Bestenliste hinzufügen
-        function addScoreToHighscores(name, score) {
-            // Name auf Standard setzen, falls leer
-            const playerName = name.trim() || "Spieler";
-            
-            // Neuen Highscore hinzufügen
-            highscores.push({ name: playerName, score: score });
-            
-            // Nach Punktzahl sortieren (absteigend)
-            highscores.sort((a, b) => b.score - a.score);
-            
-            // Nur die Top 10 behalten
-            highscores = highscores.slice(0, 10);
-            
-            // Speichern und Anzeige aktualisieren
-            saveHighscores();
-            updateHighscoreDisplay();
-            updateCurrentHighscore();
-        }
+        // Farben für die verschiedenen Früchte
+        const FRUIT_COLORS = [
+            { main: '#FF5252', highlight: '#FF8A80' }, // Rot
+            { main: '#FF9800', highlight: '#FFB74D' }, // Orange
+            { main: '#FFEB3B', highlight: '#FFF176' }, // Gelb
+            { main: '#4CAF50', highlight: '#81C784' }, // Grün
+            { main: '#2196F3', highlight: '#64B5F6' }, // Blau
+            { main: '#9C27B0', highlight: '#BA68C8' }, // Lila
+            { main: '#E91E63', highlight: '#F06292' }  // Pink
+        ];
         
         // Canvas-Größe initialisieren
         function initCanvas() {
@@ -619,14 +408,14 @@
             score = 0;
             scoreElement.textContent = score;
             
-            // Spielgeschwindigkeit zurücksetzen
+            // Spielgeschwindigkeit zurücksetzen (nicht so schnell)
             gameSpeed = 120;
             
-            // Highscore-Status zurücksetzen
-            isNewHighscore = false;
-            
-            // Futter platzieren
-            placeFood();
+            // Früchte initialisieren (5 Stück)
+            foods = [];
+            for (let i = 0; i < 5; i++) {
+                placeNewFood();
+            }
             
             // Spielstatus
             gameRunning = true;
@@ -642,23 +431,45 @@
             drawGame();
         }
         
-        // Futter an zufälliger Position platzieren
-        function placeFood() {
+        // Neue Frucht an zufälliger Position platzieren
+        function placeNewFood() {
             let foodOnSnake;
+            let foodOnOtherFood;
+            let newFood;
+            
             do {
                 foodOnSnake = false;
-                food = {
+                foodOnOtherFood = false;
+                
+                // Zufällige Position
+                newFood = {
                     x: Math.floor(Math.random() * gridWidth),
-                    y: Math.floor(Math.random() * gridHeight)
+                    y: Math.floor(Math.random() * gridHeight),
+                    colorIndex: Math.floor(Math.random() * FRUIT_COLORS.length)
                 };
                 
+                // Prüfen, ob Frucht auf Schlange ist
                 for (let segment of snake) {
-                    if (segment.x === food.x && segment.y === food.y) {
+                    if (segment.x === newFood.x && segment.y === newFood.y) {
                         foodOnSnake = true;
                         break;
                     }
                 }
-            } while (foodOnSnake);
+                
+                // Prüfen, ob Frucht auf anderer Frucht ist
+                if (!foodOnSnake) {
+                    for (let existingFood of foods) {
+                        if (existingFood.x === newFood.x && existingFood.y === newFood.y) {
+                            foodOnOtherFood = true;
+                            break;
+                        }
+                    }
+                }
+                
+            } while (foodOnSnake || foodOnOtherFood);
+            
+            // Neue Frucht hinzufügen
+            foods.push(newFood);
         }
         
         // Spiel aktualisieren
@@ -701,19 +512,36 @@
             // Neuen Kopf zur Schlange hinzufügen
             snake.unshift(head);
             
-            // Prüfen, ob Futter gefressen wurde
-            if (head.x === food.x && head.y === food.y) {
-                score += 10;
-                scoreElement.textContent = score;
-                
-                placeFood();
-                
-                if (gameSpeed > 70) {
-                    gameSpeed -= 2;
-                    clearInterval(gameLoop);
-                    gameLoop = setInterval(updateGame, gameSpeed);
+            // Prüfen, ob eine Frucht gefressen wurde
+            let fruitEaten = false;
+            for (let i = foods.length - 1; i >= 0; i--) {
+                const food = foods[i];
+                if (head.x === food.x && head.y === food.y) {
+                    // Punktestand erhöhen (jede Frucht gibt 10 Punkte)
+                    score += 10;
+                    scoreElement.textContent = score;
+                    
+                    // Gefressene Frucht entfernen
+                    foods.splice(i, 1);
+                    
+                    // Neue Frucht platzieren (immer 5 Früchte im Spiel)
+                    placeNewFood();
+                    
+                    fruitEaten = true;
+                    
+                    // Spiel leicht beschleunigen (aber nicht so stark wie vorher)
+                    if (gameSpeed > minGameSpeed) {
+                        gameSpeed -= 1; // Nur 1ms schneller statt 2ms
+                        clearInterval(gameLoop);
+                        gameLoop = setInterval(updateGame, gameSpeed);
+                    }
+                    
+                    break; // Nur eine Frucht pro Frame fressen
                 }
-            } else {
+            }
+            
+            // Wenn keine Frucht gefressen wurde, Schwanz entfernen
+            if (!fruitEaten) {
                 snake.pop();
             }
             
@@ -836,22 +664,38 @@
             ctx.arc(eye2X, eye2Y, 3, 0, Math.PI * 2);
             ctx.fill();
             
-            // Futter zeichnen
-            ctx.fillStyle = '#FF5252';
-            ctx.beginPath();
-            const foodCenterX = food.x * gridSize + gridSize / 2;
-            const foodCenterY = food.y * gridSize + gridSize / 2;
-            ctx.arc(foodCenterX, foodCenterY, gridSize / 2 - 2, 0, Math.PI * 2);
-            ctx.fill();
+            // Alle Früchte zeichnen
+            drawFoods();
             
-            // Glanzpunkt auf dem Futter
-            ctx.fillStyle = '#FF8A80';
-            ctx.beginPath();
-            ctx.arc(foodCenterX - 3, foodCenterY - 3, 2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Optional: Zeichne einen kleinen Farbverlauf-Indikator in der Ecke
+            // Farbverlauf-Indikator zeichnen
             drawColorIndicator();
+        }
+        
+        // Alle Früchte zeichnen
+        function drawFoods() {
+            for (let food of foods) {
+                const color = FRUIT_COLORS[food.colorIndex];
+                
+                // Hauptfarbe der Frucht
+                ctx.fillStyle = color.main;
+                ctx.beginPath();
+                const foodCenterX = food.x * gridSize + gridSize / 2;
+                const foodCenterY = food.y * gridSize + gridSize / 2;
+                ctx.arc(foodCenterX, foodCenterY, gridSize / 2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Glanzpunkt auf der Frucht
+                ctx.fillStyle = color.highlight;
+                ctx.beginPath();
+                ctx.arc(foodCenterX - 3, foodCenterY - 3, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Optional: Kleiner Stern in der Mitte für bessere Sichtbarkeit
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(foodCenterX, foodCenterY, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
         
         // Farbverlauf-Indikator zeichnen
@@ -889,19 +733,6 @@
             clearInterval(gameLoop);
             
             finalScoreElement.textContent = `Punkte: ${score}`;
-            
-            // Prüfen, ob es ein neuer Highscore ist
-            isNewHighscore = checkIfNewHighscore();
-            
-            if (isNewHighscore) {
-                newHighscoreMessage.style.display = "block";
-                nameInputContainer.style.display = "block";
-                playerNameInput.focus();
-            } else {
-                newHighscoreMessage.style.display = "none";
-                nameInputContainer.style.display = "none";
-            }
-            
             gameOverScreen.style.display = "flex";
         }
         
@@ -1030,33 +861,13 @@
             }
         }
         
-        // Score speichern
-        function saveScore() {
-            const playerName = playerNameInput.value.trim() || "Spieler";
-            addScoreToHighscores(playerName, score);
-            
-            // Eingabefeld leeren
-            playerNameInput.value = "";
-            
-            // Zurück zum Spiel
-            initGame();
-        }
-        
         // Event-Listener initialisieren
         function initEventListeners() {
             document.addEventListener('keydown', handleKeyDown);
             
             restartBtn.addEventListener('click', initGame);
             restartGameBtn.addEventListener('click', initGame);
-            saveScoreBtn.addEventListener('click', saveScore);
             pauseBtn.addEventListener('click', togglePause);
-            
-            // Enter-Taste im Namenseingabefeld
-            playerNameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    saveScore();
-                }
-            });
             
             setupTouchControls();
             
@@ -1069,7 +880,6 @@
         // Initialisierung, wenn die Seite geladen ist
         window.addEventListener('load', () => {
             initCanvas();
-            loadHighscores();
             initGame();
             initEventListeners();
         });
