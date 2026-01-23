@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake Spiel für iPad</title>
+    <title>Snake Spiel</title>
     <style>
         * {
             margin: 0;
@@ -21,36 +21,17 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #fff;
-            padding: 20px;
+            padding: 10px;
             overflow: hidden;
         }
         
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 700px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
-        
-        .subtitle {
-            color: #aaa;
-            font-size: 1.1rem;
+            gap: 15px;
         }
         
         .game-container {
@@ -65,7 +46,7 @@
             justify-content: space-between;
             align-items: center;
             background-color: rgba(0, 0, 0, 0.4);
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 12px 12px 0 0;
             border-bottom: 2px solid #4CAF50;
         }
@@ -77,19 +58,19 @@
         }
         
         .score-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #aaa;
         }
         
         .score-value {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
             color: #4CAF50;
         }
         
         .controls-container {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
         
         .control-btn {
@@ -97,8 +78,8 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 1.1rem;
+            padding: 10px 15px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -126,32 +107,29 @@
         
         .touch-controls {
             width: 100%;
-            max-width: 500px;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            max-width: 400px;
+            margin-top: 10px;
         }
         
         .direction-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
-            width: 250px;
-            height: 250px;
+            gap: 12px;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
         }
         
         .dir-btn {
             background: linear-gradient(135deg, #333, #222);
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
             transition: all 0.1s;
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
@@ -177,7 +155,7 @@
             grid-column: 2;
             grid-row: 2;
             background: linear-gradient(135deg, #555, #444);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
         
         #rightBtn {
@@ -192,26 +170,27 @@
         
         .instructions {
             background-color: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            max-width: 600px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            max-width: 500px;
             width: 100%;
+            font-size: 0.9rem;
         }
         
         .instructions h2 {
             color: #4CAF50;
-            margin-bottom: 10px;
-            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
         }
         
         .instructions ul {
-            padding-left: 20px;
-            line-height: 1.6;
+            padding-left: 18px;
+            line-height: 1.5;
         }
         
         .instructions li {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .game-over {
@@ -230,48 +209,32 @@
         }
         
         .game-over h2 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #f44336;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .final-score {
-            font-size: 2rem;
-            margin-bottom: 30px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
             color: #4CAF50;
         }
         
         .mobile-swipe-note {
-            display: none;
             color: #aaa;
             font-style: italic;
-            margin-top: 10px;
+            margin-top: 8px;
             text-align: center;
+            font-size: 0.9rem;
         }
         
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
+        @media (max-height: 900px) {
+            .instructions {
+                display: none;
             }
             
-            .direction-pad {
-                width: 220px;
-                height: 220px;
-            }
-            
-            .dir-btn {
-                font-size: 1.8rem;
-            }
-            
-            .mobile-swipe-note {
-                display: block;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .game-header {
-                flex-direction: column;
-                gap: 15px;
+            .touch-controls {
+                margin-top: 5px;
             }
             
             .direction-pad {
@@ -279,19 +242,55 @@
                 height: 200px;
             }
         }
+        
+        @media (max-height: 800px) {
+            .mobile-swipe-note {
+                display: none;
+            }
+            
+            .direction-pad {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .dir-btn {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .touch-controls {
+                display: none;
+            }
+            
+            body {
+                padding: 5px;
+            }
+            
+            .game-header {
+                padding: 8px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .direction-pad {
+                width: 180px;
+                height: 180px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Snake Spiel</h1>
-            <p class="subtitle">Für iPad und Desktop mit Touch-Steuerung</p>
-        </header>
-        
         <div class="game-container">
             <div class="game-header">
                 <div class="score-container">
-                    <div class="score-label">PUNKTESTAND</div>
+                    <div class="score-label">PUNKTE</div>
                     <div class="score-value" id="score">0</div>
                 </div>
                 
@@ -305,7 +304,7 @@
             
             <div class="game-over" id="gameOverScreen">
                 <h2>GAME OVER</h2>
-                <div class="final-score" id="finalScore">Punktestand: 0</div>
+                <div class="final-score" id="finalScore">Punkte: 0</div>
                 <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
             </div>
         </div>
@@ -318,17 +317,16 @@
                 <button class="dir-btn" id="rightBtn">→</button>
                 <button class="dir-btn" id="downBtn">↓</button>
             </div>
-            <p class="mobile-swipe-note">Du kannst auch swipen, um die Schlange zu steuern</p>
+            <p class="mobile-swipe-note">Wische auf dem Spielfeld oder nutze die Tasten</p>
         </div>
         
         <div class="instructions">
             <h2>Spielanleitung</h2>
             <ul>
-                <li>Steuere die Schlange mit den Richtungstasten oder durch Wischen auf dem Bildschirm</li>
-                <li>Fresse das rote Futter, um Punkte zu sammeln und zu wachsen</li>
-                <li>Vermeide es, gegen die Wände oder deinen eigenen Schwanz zu stoßen</li>
+                <li>Steuere die Schlange mit den Tasten oder durch Wischen</li>
+                <li>Fresse das rote Futter, um Punkte zu sammeln</li>
+                <li>Vermeide Wände und deinen eigenen Schwanz</li>
                 <li>Das Spiel wird schneller, je mehr Futter du frisst</li>
-                <li>Drücke "Pause", um das Spiel anzuhalten</li>
             </ul>
         </div>
     </div>
@@ -358,7 +356,7 @@
         let direction = 'right';
         let nextDirection = 'right';
         let score = 0;
-        let gameSpeed = 120; // Millisekunden zwischen Updates
+        let gameSpeed = 120;
         let gameRunning = false;
         let gamePaused = false;
         let gameLoop;
@@ -408,11 +406,13 @@
             // Spiel-Loop starten
             if (gameLoop) clearInterval(gameLoop);
             gameLoop = setInterval(updateGame, gameSpeed);
+            
+            // Sofort zeichnen
+            drawGame();
         }
         
         // Futter an zufälliger Position platzieren
         function placeFood() {
-            // Stelle sicher, dass Futter nicht auf der Schlange platziert wird
             let foodOnSnake;
             do {
                 foodOnSnake = false;
@@ -421,7 +421,6 @@
                     y: Math.floor(Math.random() * gridHeight)
                 };
                 
-                // Prüfe, ob Futter auf Schlange ist
                 for (let segment of snake) {
                     if (segment.x === food.x && segment.y === food.y) {
                         foodOnSnake = true;
@@ -435,10 +434,8 @@
         function updateGame() {
             if (!gameRunning || gamePaused) return;
             
-            // Richtung aktualisieren
             direction = nextDirection;
             
-            // Neuen Kopf basierend auf der aktuellen Richtung berechnen
             const head = {...snake[0]};
             
             switch (direction) {
@@ -475,25 +472,20 @@
             
             // Prüfen, ob Futter gefressen wurde
             if (head.x === food.x && head.y === food.y) {
-                // Punktestand erhöhen
                 score += 10;
                 scoreElement.textContent = score;
                 
-                // Futter neu platzieren
                 placeFood();
                 
-                // Spiel beschleunigen (bis zu einem Minimum)
                 if (gameSpeed > 70) {
                     gameSpeed -= 2;
                     clearInterval(gameLoop);
                     gameLoop = setInterval(updateGame, gameSpeed);
                 }
             } else {
-                // Wenn kein Futter gefressen wurde, Schwanz entfernen
                 snake.pop();
             }
             
-            // Spielfeld zeichnen
             drawGame();
         }
         
@@ -525,7 +517,6 @@
             for (let i = 0; i < snake.length; i++) {
                 const segment = snake[i];
                 
-                // Farbverlauf für die Schlange
                 const gradient = ctx.createLinearGradient(
                     segment.x * gridSize, 
                     segment.y * gridSize, 
@@ -534,11 +525,9 @@
                 );
                 
                 if (i === 0) {
-                    // Kopf in anderer Farbe
                     gradient.addColorStop(0, '#4CAF50');
                     gradient.addColorStop(1, '#2E7D32');
                 } else {
-                    // Körper in abgestuften Grüntönen
                     const intensity = 1 - (i / snake.length) * 0.7;
                     gradient.addColorStop(0, `rgba(76, 175, 80, ${intensity})`);
                     gradient.addColorStop(1, `rgba(46, 125, 50, ${intensity})`);
@@ -547,7 +536,6 @@
                 ctx.fillStyle = gradient;
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
                 
-                // Schlange hat abgerundete Ecken
                 ctx.strokeStyle = '#1B5E20';
                 ctx.lineWidth = 1;
                 ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
@@ -557,7 +545,6 @@
             const head = snake[0];
             ctx.fillStyle = '#FFF';
             
-            // Augen position basierend auf Richtung
             let eye1X, eye1Y, eye2X, eye2Y;
             
             switch(direction) {
@@ -603,7 +590,6 @@
             ctx.arc(foodCenterX, foodCenterY, gridSize / 2 - 2, 0, Math.PI * 2);
             ctx.fill();
             
-            // Futter hat einen Glanzpunkt
             ctx.fillStyle = '#FF8A80';
             ctx.beginPath();
             ctx.arc(foodCenterX - 3, foodCenterY - 3, 2, 0, Math.PI * 2);
@@ -615,13 +601,12 @@
             gameRunning = false;
             clearInterval(gameLoop);
             
-            finalScoreElement.textContent = `Punktestand: ${score}`;
+            finalScoreElement.textContent = `Punkte: ${score}`;
             gameOverScreen.style.display = "flex";
         }
         
         // Tastensteuerung
         function handleKeyDown(e) {
-            // Verhindere Scrollen mit Pfeiltasten
             if ([37, 38, 39, 40].includes(e.keyCode)) {
                 e.preventDefault();
             }
@@ -671,7 +656,6 @@
                 if (direction !== 'left') nextDirection = 'right';
             });
             
-            // Auch Click-Events für Desktop-Unterstützung
             upBtn.addEventListener('click', () => {
                 if (direction !== 'down') nextDirection = 'up';
             });
@@ -698,7 +682,7 @@
             });
             
             canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault(); // Verhindert Scrollen
+                e.preventDefault();
             });
             
             canvas.addEventListener('touchend', (e) => {
@@ -711,18 +695,14 @@
                 const dx = touchEndX - touchStartX;
                 const dy = touchEndY - touchStartY;
                 
-                // Nur auf signifikante Bewegungen reagieren
                 if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
-                    // Bestimme die primäre Richtung
                     if (Math.abs(dx) > Math.abs(dy)) {
-                        // Horizontale Bewegung
                         if (dx > 0 && direction !== 'left') {
                             nextDirection = 'right';
                         } else if (dx < 0 && direction !== 'right') {
                             nextDirection = 'left';
                         }
                     } else {
-                        // Vertikale Bewegung
                         if (dy > 0 && direction !== 'up') {
                             nextDirection = 'down';
                         } else if (dy < 0 && direction !== 'down') {
@@ -731,7 +711,6 @@
                     }
                 }
                 
-                // Touch-Start zurücksetzen
                 touchStartX = 0;
                 touchStartY = 0;
             });
@@ -753,18 +732,14 @@
         
         // Event-Listener initialisieren
         function initEventListeners() {
-            // Tastatursteuerung
             document.addEventListener('keydown', handleKeyDown);
             
-            // Button-Listener
             restartBtn.addEventListener('click', initGame);
             restartGameBtn.addEventListener('click', initGame);
             pauseBtn.addEventListener('click', togglePause);
             
-            // Touch-Steuerung einrichten
             setupTouchControls();
             
-            // Fenstergrößenänderung behandeln
             window.addEventListener('resize', () => {
                 initCanvas();
                 if (gameRunning) drawGame();
