@@ -51,13 +51,18 @@
             border-bottom: 2px solid #4CAF50;
         }
         
-        .score-container {
+        .stats-container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .score-box, .highscore-box {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         
-        .score-label {
+        .score-label, .highscore-label {
             font-size: 0.9rem;
             color: #aaa;
         }
@@ -66,6 +71,12 @@
             font-size: 2rem;
             font-weight: bold;
             color: #4CAF50;
+        }
+        
+        .highscore-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2196F3;
         }
         
         .controls-container {
@@ -137,7 +148,7 @@
         }
         
         .dir-btn:active {
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
             transform: scale(0.95);
         }
         
@@ -168,29 +179,59 @@
             grid-row: 3;
         }
         
-        .instructions {
+        .highscore-section {
             background-color: rgba(0, 0, 0, 0.4);
             padding: 15px;
             border-radius: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
             max-width: 500px;
             width: 100%;
             font-size: 0.9rem;
         }
         
-        .instructions h2 {
-            color: #4CAF50;
-            margin-bottom: 8px;
+        .highscore-section h2 {
+            color: #2196F3;
+            margin-bottom: 10px;
             font-size: 1.2rem;
+            text-align: center;
         }
         
-        .instructions ul {
-            padding-left: 18px;
-            line-height: 1.5;
+        .highscore-list {
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 10px;
         }
         
-        .instructions li {
-            margin-bottom: 6px;
+        .highscore-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        
+        .highscore-item:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .highscore-rank {
+            color: #4CAF50;
+            font-weight: bold;
+            min-width: 30px;
+        }
+        
+        .highscore-name {
+            flex-grow: 1;
+            text-align: left;
+            padding: 0 10px;
+        }
+        
+        .highscore-points {
+            color: #2196F3;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: right;
         }
         
         .game-over {
@@ -199,13 +240,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(0, 0, 0, 0.9);
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border-radius: 0 0 12px 12px;
             z-index: 10;
+            padding: 20px;
         }
         
         .game-over h2 {
@@ -216,8 +258,44 @@
         
         .final-score {
             font-size: 1.8rem;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #4CAF50;
+        }
+        
+        .new-highscore {
+            font-size: 1.5rem;
+            color: #2196F3;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .name-input-container {
+            margin: 15px 0;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #4CAF50;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .name-input::placeholder {
+            color: #aaa;
+        }
+        
+        .game-over-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
         
         .mobile-swipe-note {
@@ -229,17 +307,13 @@
         }
         
         @media (max-height: 900px) {
-            .instructions {
-                display: none;
-            }
-            
-            .touch-controls {
+            .highscore-section {
+                padding: 12px;
                 margin-top: 5px;
             }
             
-            .direction-pad {
-                width: 200px;
-                height: 200px;
+            .highscore-list {
+                max-height: 100px;
             }
         }
         
@@ -255,6 +329,10 @@
             
             .dir-btn {
                 font-size: 1.6rem;
+            }
+            
+            .highscore-section {
+                display: none;
             }
         }
         
@@ -282,6 +360,11 @@
                 width: 180px;
                 height: 180px;
             }
+            
+            .stats-container {
+                width: 100%;
+                justify-content: space-around;
+            }
         }
     </style>
 </head>
@@ -289,9 +372,15 @@
     <div class="container">
         <div class="game-container">
             <div class="game-header">
-                <div class="score-container">
-                    <div class="score-label">PUNKTE</div>
-                    <div class="score-value" id="score">0</div>
+                <div class="stats-container">
+                    <div class="score-box">
+                        <div class="score-label">PUNKTE</div>
+                        <div class="score-value" id="score">0</div>
+                    </div>
+                    <div class="highscore-box">
+                        <div class="highscore-label">BESTE</div>
+                        <div class="highscore-value" id="highscore">0</div>
+                    </div>
                 </div>
                 
                 <div class="controls-container">
@@ -305,7 +394,16 @@
             <div class="game-over" id="gameOverScreen">
                 <h2>GAME OVER</h2>
                 <div class="final-score" id="finalScore">Punkte: 0</div>
-                <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
+                <div class="new-highscore" id="newHighscoreMessage">NEUER REKORD!</div>
+                
+                <div class="name-input-container" id="nameInputContainer">
+                    <input type="text" class="name-input" id="playerNameInput" placeholder="Dein Name" maxlength="15">
+                </div>
+                
+                <div class="game-over-buttons">
+                    <button class="control-btn" id="saveScoreBtn">Punkte speichern</button>
+                    <button class="control-btn" id="restartGameBtn">Nochmal spielen</button>
+                </div>
             </div>
         </div>
         
@@ -320,14 +418,26 @@
             <p class="mobile-swipe-note">Wische auf dem Spielfeld oder nutze die Tasten</p>
         </div>
         
-        <div class="instructions">
-            <h2>Spielanleitung</h2>
-            <ul>
-                <li>Steuere die Schlange mit den Tasten oder durch Wischen</li>
-                <li>Fresse das rote Futter, um Punkte zu sammeln</li>
-                <li>Vermeide Wände und deinen eigenen Schwanz</li>
-                <li>Das Spiel wird schneller, je mehr Futter du frisst</li>
-            </ul>
+        <div class="highscore-section">
+            <h2>BESTENLISTE</h2>
+            <div class="highscore-list" id="highscoreList">
+                <!-- Highscores werden hier dynamisch geladen -->
+                <div class="highscore-item">
+                    <span class="highscore-rank">1.</span>
+                    <span class="highscore-name">Champion</span>
+                    <span class="highscore-points">500</span>
+                </div>
+                <div class="highscore-item">
+                    <span class="highscore-rank">2.</span>
+                    <span class="highscore-name">Profi</span>
+                    <span class="highscore-points">300</span>
+                </div>
+                <div class="highscore-item">
+                    <span class="highscore-rank">3.</span>
+                    <span class="highscore-name">Spieler</span>
+                    <span class="highscore-points">200</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -336,10 +446,16 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
+        const highscoreElement = document.getElementById('highscore');
         const gameOverScreen = document.getElementById('gameOverScreen');
         const finalScoreElement = document.getElementById('finalScore');
+        const newHighscoreMessage = document.getElementById('newHighscoreMessage');
+        const nameInputContainer = document.getElementById('nameInputContainer');
+        const playerNameInput = document.getElementById('playerNameInput');
+        const highscoreList = document.getElementById('highscoreList');
         const restartBtn = document.getElementById('restartBtn');
         const restartGameBtn = document.getElementById('restartGameBtn');
+        const saveScoreBtn = document.getElementById('saveScoreBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         
         // Touch-Steuerungselemente
@@ -362,6 +478,118 @@
         let gameLoop;
         let touchStartX = 0;
         let touchStartY = 0;
+        
+        // Highscore-Variablen
+        let highscores = [];
+        let currentHighscore = 0;
+        let isNewHighscore = false;
+        
+        // Local Storage Schlüssel
+        const HIGHSCORE_STORAGE_KEY = 'snakeHighscores';
+        
+        // Highscores aus Local Storage laden
+        function loadHighscores() {
+            const savedHighscores = localStorage.getItem(HIGHSCORE_STORAGE_KEY);
+            if (savedHighscores) {
+                highscores = JSON.parse(savedHighscores);
+            } else {
+                // Standard-Highscores, falls keine gespeichert sind
+                highscores = [
+                    { name: "Champion", score: 500 },
+                    { name: "Profi", score: 300 },
+                    { name: "Spieler", score: 200 },
+                    { name: "Anfänger", score: 100 },
+                    { name: "Neuling", score: 50 }
+                ];
+                saveHighscores();
+            }
+            
+            updateHighscoreDisplay();
+            updateCurrentHighscore();
+        }
+        
+        // Highscores in Local Storage speichern
+        function saveHighscores() {
+            localStorage.setItem(HIGHSCORE_STORAGE_KEY, JSON.stringify(highscores));
+        }
+        
+        // Highscore-Anzeige aktualisieren
+        function updateHighscoreDisplay() {
+            // Sortiere Highscores absteigend nach Punktzahl
+            highscores.sort((a, b) => b.score - a.score);
+            
+            // Zeige nur die Top 10 an
+            const topHighscores = highscores.slice(0, 10);
+            
+            // Leere die aktuelle Liste
+            highscoreList.innerHTML = '';
+            
+            // Füge jeden Highscore zur Liste hinzu
+            topHighscores.forEach((highscore, index) => {
+                const highscoreItem = document.createElement('div');
+                highscoreItem.className = 'highscore-item';
+                
+                const rank = document.createElement('span');
+                rank.className = 'highscore-rank';
+                rank.textContent = `${index + 1}.`;
+                
+                const name = document.createElement('span');
+                name.className = 'highscore-name';
+                name.textContent = highscore.name;
+                
+                const points = document.createElement('span');
+                points.className = 'highscore-points';
+                points.textContent = highscore.score;
+                
+                highscoreItem.appendChild(rank);
+                highscoreItem.appendChild(name);
+                highscoreItem.appendChild(points);
+                
+                highscoreList.appendChild(highscoreItem);
+            });
+        }
+        
+        // Aktuellen Highscore (höchste Punktzahl) aktualisieren
+        function updateCurrentHighscore() {
+            if (highscores.length > 0) {
+                currentHighscore = Math.max(...highscores.map(h => h.score));
+                highscoreElement.textContent = currentHighscore;
+            } else {
+                currentHighscore = 0;
+                highscoreElement.textContent = '0';
+            }
+        }
+        
+        // Prüfen, ob der aktuelle Score ein Highscore ist
+        function checkIfNewHighscore() {
+            // Mindestens Platz 10 in der Bestenliste oder höher als der niedrigste Highscore
+            if (highscores.length < 10) {
+                return true;
+            }
+            
+            const lowestHighscore = highscores.reduce((min, h) => h.score < min ? h.score : min, highscores[0].score);
+            return score > lowestHighscore;
+        }
+        
+        // Score zur Bestenliste hinzufügen
+        function addScoreToHighscores(name, score) {
+            // Name auf Standard setzen, falls leer
+            const playerName = name.trim() || "Spieler";
+            
+            // Neuen Highscore hinzufügen
+            highscores.push({ name: playerName, score: score });
+            
+            // Nach Punktzahl sortieren (absteigend)
+            highscores.sort((a, b) => b.score - a.score);
+            
+            // Nur die Top 10 behalten
+            highscores = highscores.slice(0, 10);
+            
+            // Speichern und Anzeige aktualisieren
+            saveHighscores();
+            updateHighscoreDisplay();
+            updateCurrentHighscore();
+        }
         
         // Canvas-Größe initialisieren
         function initCanvas() {
@@ -393,6 +621,9 @@
             
             // Spielgeschwindigkeit zurücksetzen
             gameSpeed = 120;
+            
+            // Highscore-Status zurücksetzen
+            isNewHighscore = false;
             
             // Futter platzieren
             placeFood();
@@ -489,7 +720,7 @@
             drawGame();
         }
         
-        // Spiel zeichnen
+        // Spiel zeichnen mit Blau-Grün Farbübergang
         function drawGame() {
             // Hintergrund zeichnen
             ctx.fillStyle = '#0d1525';
@@ -513,10 +744,14 @@
                 ctx.stroke();
             }
             
-            // Schlange zeichnen
+            // Schlange zeichnen mit Blau-Grün Farbverlauf
             for (let i = 0; i < snake.length; i++) {
                 const segment = snake[i];
                 
+                // Berechne den Fortschritt im Farbverlauf (0 = Kopf, 1 = Schwanz)
+                const progress = i / Math.max(snake.length - 1, 1);
+                
+                // Erstelle Farbverlauf von Blau zu Grün
                 const gradient = ctx.createLinearGradient(
                     segment.x * gridSize, 
                     segment.y * gridSize, 
@@ -525,18 +760,37 @@
                 );
                 
                 if (i === 0) {
-                    gradient.addColorStop(0, '#4CAF50');
-                    gradient.addColorStop(1, '#2E7D32');
+                    // Kopf: Helleres Grün
+                    gradient.addColorStop(0, '#4CAF50');  // Hellgrün
+                    gradient.addColorStop(1, '#2E7D32');  // Dunkelgrün
                 } else {
-                    const intensity = 1 - (i / snake.length) * 0.7;
-                    gradient.addColorStop(0, `rgba(76, 175, 80, ${intensity})`);
-                    gradient.addColorStop(1, `rgba(46, 125, 50, ${intensity})`);
+                    // Körper: Verlauf von Blau zu Grün basierend auf Position
+                    // Je näher am Kopf, desto mehr Grün, je näher am Schwanz, desto mehr Blau
+                    const blueToGreenRatio = 1 - progress; // 1 = viel Blau, 0 = viel Grün
+                    
+                    // Berechne RGB-Werte für Blau (0, 122, 255) und Grün (76, 175, 80)
+                    const blueR = 0, blueG = 122, blueB = 255;
+                    const greenR = 76, greenG = 175, greenB = 80;
+                    
+                    // Interpoliere zwischen Blau und Grün basierend auf Position
+                    const r = Math.round(blueR * blueToGreenRatio + greenR * progress);
+                    const g = Math.round(blueG * blueToGreenRatio + greenG * progress);
+                    const b = Math.round(blueB * blueToGreenRatio + greenB * progress);
+                    
+                    const startColor = `rgb(${r}, ${g}, ${b})`;
+                    
+                    // Dunklere Version für den zweiten Farbstopp
+                    const endColor = `rgb(${Math.max(0, r - 40)}, ${Math.max(0, g - 40)}, ${Math.max(0, b - 40)})`;
+                    
+                    gradient.addColorStop(0, startColor);
+                    gradient.addColorStop(1, endColor);
                 }
                 
                 ctx.fillStyle = gradient;
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
                 
-                ctx.strokeStyle = '#1B5E20';
+                // Rahmen für jedes Segment
+                ctx.strokeStyle = i === 0 ? '#1B5E20' : 'rgba(255, 255, 255, 0.1)';
                 ctx.lineWidth = 1;
                 ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
             }
@@ -590,10 +844,43 @@
             ctx.arc(foodCenterX, foodCenterY, gridSize / 2 - 2, 0, Math.PI * 2);
             ctx.fill();
             
+            // Glanzpunkt auf dem Futter
             ctx.fillStyle = '#FF8A80';
             ctx.beginPath();
             ctx.arc(foodCenterX - 3, foodCenterY - 3, 2, 0, Math.PI * 2);
             ctx.fill();
+            
+            // Optional: Zeichne einen kleinen Farbverlauf-Indikator in der Ecke
+            drawColorIndicator();
+        }
+        
+        // Farbverlauf-Indikator zeichnen
+        function drawColorIndicator() {
+            const indicatorSize = 60;
+            const padding = 10;
+            
+            // Zeichne einen kleinen Farbverlauf-Indikator in der unteren linken Ecke
+            const gradient = ctx.createLinearGradient(
+                padding, 
+                canvas.height - padding - indicatorSize, 
+                padding + indicatorSize, 
+                canvas.height - padding
+            );
+            
+            // Farbverlauf von Blau zu Grün
+            gradient.addColorStop(0, '#2196F3');  // Blau
+            gradient.addColorStop(0.5, '#4CAF50'); // Mittel: Blau-Grün Mischung
+            gradient.addColorStop(1, '#2E7D32');  // Grün
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(padding, canvas.height - padding - indicatorSize, indicatorSize, indicatorSize);
+            
+            // Beschriftung
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '10px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Farbverlauf:', padding, canvas.height - padding - indicatorSize - 5);
+            ctx.fillText('Blau → Grün', padding, canvas.height - padding + 12);
         }
         
         // Spielende
@@ -602,6 +889,19 @@
             clearInterval(gameLoop);
             
             finalScoreElement.textContent = `Punkte: ${score}`;
+            
+            // Prüfen, ob es ein neuer Highscore ist
+            isNewHighscore = checkIfNewHighscore();
+            
+            if (isNewHighscore) {
+                newHighscoreMessage.style.display = "block";
+                nameInputContainer.style.display = "block";
+                playerNameInput.focus();
+            } else {
+                newHighscoreMessage.style.display = "none";
+                nameInputContainer.style.display = "none";
+            }
+            
             gameOverScreen.style.display = "flex";
         }
         
@@ -730,13 +1030,33 @@
             }
         }
         
+        // Score speichern
+        function saveScore() {
+            const playerName = playerNameInput.value.trim() || "Spieler";
+            addScoreToHighscores(playerName, score);
+            
+            // Eingabefeld leeren
+            playerNameInput.value = "";
+            
+            // Zurück zum Spiel
+            initGame();
+        }
+        
         // Event-Listener initialisieren
         function initEventListeners() {
             document.addEventListener('keydown', handleKeyDown);
             
             restartBtn.addEventListener('click', initGame);
             restartGameBtn.addEventListener('click', initGame);
+            saveScoreBtn.addEventListener('click', saveScore);
             pauseBtn.addEventListener('click', togglePause);
+            
+            // Enter-Taste im Namenseingabefeld
+            playerNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    saveScore();
+                }
+            });
             
             setupTouchControls();
             
@@ -749,6 +1069,7 @@
         // Initialisierung, wenn die Seite geladen ist
         window.addEventListener('load', () => {
             initCanvas();
+            loadHighscores();
             initGame();
             initEventListeners();
         });
