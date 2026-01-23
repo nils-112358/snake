@@ -88,6 +88,7 @@
             border-bottom: 1px solid rgba(0, 255, 255, 0.3);
             backdrop-filter: blur(5px);
             margin-bottom: 0;
+            position: relative;
         }
         
         .score-box {
@@ -115,6 +116,62 @@
             color: #0ff;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
             font-family: 'Courier New', monospace;
+        }
+        
+        /* Unsichtbarer Unsterblichkeits-Button oben rechts */
+        .immortal-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            z-index: 100;
+        }
+        
+        /* Geheimnisvoller Glow-Effekt wenn aktiviert */
+        .immortal-glow {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+        
+        .immortal-glow.active {
+            opacity: 0.5;
+            animation: immortal-pulse 2s infinite alternate;
+        }
+        
+        @keyframes immortal-pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.2); opacity: 0.6; }
+        }
+        
+        /* Immortal Status Anzeige */
+        .immortal-status {
+            position: absolute;
+            top: 15px;
+            right: 70px;
+            color: #ff0;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+            white-space: nowrap;
+        }
+        
+        .immortal-status.active {
+            opacity: 0.8;
         }
         
         #gameCanvas {
@@ -243,6 +300,26 @@
             .score-value {
                 font-size: 1.8rem;
             }
+            
+            .immortal-btn {
+                width: 40px;
+                height: 40px;
+                top: 5px;
+                right: 5px;
+            }
+            
+            .immortal-glow {
+                width: 50px;
+                height: 50px;
+                top: 0;
+                right: 0;
+            }
+            
+            .immortal-status {
+                top: 10px;
+                right: 60px;
+                font-size: 0.7rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -265,6 +342,26 @@
             .final-score {
                 font-size: 1.8rem;
             }
+            
+            .immortal-btn {
+                width: 40px;
+                height: 40px;
+                top: 5px;
+                right: 5px;
+            }
+            
+            .immortal-glow {
+                width: 50px;
+                height: 50px;
+                top: 0;
+                right: 0;
+            }
+            
+            .immortal-status {
+                top: 10px;
+                right: 60px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -282,6 +379,11 @@
                     <div class="score-label">Punkte</div>
                     <div class="score-value" id="score">0</div>
                 </div>
+                
+                <!-- Unsichtbarer Unsterblichkeits-Button -->
+                <button class="immortal-btn" id="immortalBtn" title="Unsterblichkeit aktivieren"></button>
+                <div class="immortal-glow" id="immortalGlow"></div>
+                <div class="immortal-status" id="immortalStatus">Unsterblich</div>
             </div>
             
             <canvas id="gameCanvas"></canvas>
@@ -313,6 +415,9 @@
         const pauseOverlay = document.getElementById('pauseOverlay');
         const finalScoreElement = document.getElementById('finalScore');
         const restartGameBtn = document.getElementById('restartGameBtn');
+        const immortalBtn = document.getElementById('immortalBtn');
+        const immortalGlow = document.getElementById('immortalGlow');
+        const immortalStatus = document.getElementById('immortalStatus');
         
         // Spielvariablen
         let gridSize = 20;
@@ -330,6 +435,11 @@
         let touchStartX = 0;
         let touchStartY = 0;
         let lastTapTime = 0;
+        
+        // Unsterblichkeits-Variablen
+        let isImmortal = false;
+        let immortalStartTime = 0;
+        const IMMORTAL_DURATION = 30000; // 30 Sekunden Unsterblichkeit
         
         // Futuristische Farben
         const FRUIT_COLORS = [
@@ -373,6 +483,11 @@
             // Spielgeschwindigkeit zurücksetzen
             gameSpeed = 120;
             
+            // Unsterblichkeit zurücksetzen
+            isImmortal = false;
+            immortalGlow.classList.remove('active');
+            immortalStatus.classList.remove('active');
+            
             // Früchte initialisieren (5 Stück)
             foods = [];
             for (let i = 0; i < 5; i++) {
@@ -393,6 +508,29 @@
             drawGame();
         }
         
+        // Unsterblichkeit aktivieren
+        function activateImmortality() {
+            if (!gameRunning) return;
+            
+            isImmortal = true;
+            immortalStartTime = Date.now();
+            immortalGlow.classList.add('active');
+            immortalStatus.classList.add('active');
+            
+            // Visualen Effekt auf der Schlange
+            console.log("Unsterblichkeit aktiviert für 30 Sekunden!");
+            
+            // Unsterblichkeit nach Zeit abschalten
+            setTimeout(() => {
+                if (isImmortal) {
+                    isImmortal = false;
+                    immortalGlow.classList.remove('active');
+                    immortalStatus.classList.remove('active');
+                    console.log("Unsterblichkeit deaktiviert");
+                }
+            }, IMMORTAL_DURATION);
+        }
+        
         // Neue Frucht platzieren
         function placeNewFood() {
             let foodOnSnake, foodOnOtherFood;
@@ -406,7 +544,7 @@
                     x: Math.floor(Math.random() * gridWidth),
                     y: Math.floor(Math.random() * gridHeight),
                     colorIndex: Math.floor(Math.random() * FRUIT_COLORS.length),
-                    pulse: Math.random() * Math.PI * 2 // Zufälliger Puls-Offset
+                    pulse: Math.random() * Math.PI * 2
                 };
                 
                 // Prüfen, ob Frucht auf Schlange ist
@@ -455,17 +593,27 @@
                     break;
             }
             
-            // Kollision mit Wänden prüfen
-            if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
+            // Kollision mit Wänden prüfen (wenn nicht unsterblich)
+            if (!isImmortal && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) {
                 gameOver();
                 return;
             }
             
-            // Kollision mit eigenem Körper prüfen
-            for (let segment of snake) {
-                if (head.x === segment.x && head.y === segment.y) {
-                    gameOver();
-                    return;
+            // Durch Wände gehen wenn unsterblich
+            if (isImmortal) {
+                if (head.x < 0) head.x = gridWidth - 1;
+                if (head.x >= gridWidth) head.x = 0;
+                if (head.y < 0) head.y = gridHeight - 1;
+                if (head.y >= gridHeight) head.y = 0;
+            }
+            
+            // Kollision mit eigenem Körper prüfen (wenn nicht unsterblich)
+            if (!isImmortal) {
+                for (let segment of snake) {
+                    if (head.x === segment.x && head.y === segment.y) {
+                        gameOver();
+                        return;
+                    }
                 }
             }
             
@@ -512,6 +660,61 @@
             
             // Früchte zeichnen mit Glow-Effekt
             drawFuturisticFoods();
+            
+            // Unsterblichkeitseffekt zeichnen wenn aktiv
+            if (isImmortal) {
+                drawImmortalEffect();
+            }
+        }
+        
+        // Unsterblichkeitseffekt zeichnen
+        function drawImmortalEffect() {
+            const time = Date.now() * 0.01;
+            const head = snake[0];
+            const centerX = head.x * gridSize + gridSize/2;
+            const centerY = head.y * gridSize + gridSize/2;
+            
+            // Schutzschild um den Kopf
+            const shieldRadius = gridSize * 1.5;
+            const shieldGradient = ctx.createRadialGradient(
+                centerX, centerY, gridSize/2,
+                centerX, centerY, shieldRadius
+            );
+            
+            shieldGradient.addColorStop(0, 'rgba(255, 255, 0, 0.3)');
+            shieldGradient.addColorStop(0.5, 'rgba(255, 255, 0, 0.1)');
+            shieldGradient.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = shieldGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, shieldRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Rotierende Schutzring-Elemente
+            ctx.strokeStyle = `rgba(255, 255, 0, ${0.5 + Math.sin(time) * 0.3})`;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            
+            for (let i = 0; i < 3; i++) {
+                const radius = gridSize + i * 3 + Math.sin(time + i) * 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+            
+            // Restzeit-Anzeige
+            const remainingTime = IMMORTAL_DURATION - (Date.now() - immortalStartTime);
+            const secondsLeft = Math.ceil(remainingTime / 1000);
+            
+            if (secondsLeft > 0) {
+                ctx.fillStyle = '#FF0';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${secondsLeft}s`, centerX, centerY - gridSize * 2);
+            }
         }
         
         // Futuristischer Hintergrund
@@ -553,15 +756,23 @@
         
         // Futuristische Schlange zeichnen
         function drawFuturisticSnake() {
-            const time = Date.now() * 0.01; // Für Animationseffekte
+            const time = Date.now() * 0.01;
             
             for (let i = 0; i < snake.length; i++) {
                 const segment = snake[i];
-                const segmentTime = time - i * 0.3; // Wellen-Effekt entlang der Schlange
+                const segmentTime = time - i * 0.3;
                 
-                // Farbverlauf von Cyan zu Magenta
-                const progress = i / Math.max(snake.length - 1, 1);
-                const hue = 180 + progress * 180; // 180° (Cyan) zu 360° (Magenta)
+                // Spezielle Farbe wenn unsterblich
+                let hue;
+                if (isImmortal) {
+                    // Goldene Farbe für Unsterblichkeit
+                    hue = 60 + Math.sin(segmentTime * 2) * 10;
+                } else {
+                    // Normaler Farbverlauf von Cyan zu Magenta
+                    const progress = i / Math.max(snake.length - 1, 1);
+                    hue = 180 + progress * 180;
+                }
+                
                 const color = `hsl(${hue}, 100%, ${50 + Math.sin(segmentTime) * 10}%)`;
                 
                 // Glow-Effekt
@@ -606,8 +817,8 @@
                 );
                 
                 // Segment-Rand
-                ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = isImmortal ? 'rgba(255, 255, 0, 0.8)' : 'rgba(0, 255, 255, 0.5)';
+                ctx.lineWidth = isImmortal ? 2 : 1;
                 ctx.strokeRect(
                     segment.x * gridSize + 2,
                     segment.y * gridSize + 2,
@@ -619,7 +830,7 @@
             // Augen für den Kopf
             if (snake.length > 0) {
                 const head = snake[0];
-                ctx.fillStyle = '#FFFFFF';
+                ctx.fillStyle = isImmortal ? '#FF0' : '#FFFFFF';
                 
                 // Augen positionieren basierend auf Richtung
                 let eyeOffsetX = 0, eyeOffsetY = 0;
@@ -651,7 +862,7 @@
                     head.y * gridSize + gridSize/2 - 3,
                     8
                 );
-                eyeGlow.addColorStop(0, '#FFFFFF');
+                eyeGlow.addColorStop(0, isImmortal ? '#FF0' : '#FFFFFF');
                 eyeGlow.addColorStop(1, 'transparent');
                 
                 ctx.fillStyle = eyeGlow;
@@ -664,7 +875,7 @@
                 ctx.fill();
                 
                 // Augäpfel
-                ctx.fillStyle = '#00FFFF';
+                ctx.fillStyle = isImmortal ? '#000' : '#00FFFF';
                 ctx.beginPath();
                 ctx.arc(
                     head.x * gridSize + gridSize/2 + eyeOffsetX,
@@ -682,7 +893,7 @@
                     head.y * gridSize + gridSize/2 + 3,
                     8
                 );
-                eyeGlow2.addColorStop(0, '#FFFFFF');
+                eyeGlow2.addColorStop(0, isImmortal ? '#FF0' : '#FFFFFF');
                 eyeGlow2.addColorStop(1, 'transparent');
                 
                 ctx.fillStyle = eyeGlow2;
@@ -694,7 +905,7 @@
                 );
                 ctx.fill();
                 
-                ctx.fillStyle = '#00FFFF';
+                ctx.fillStyle = isImmortal ? '#000' : '#00FFFF';
                 ctx.beginPath();
                 ctx.arc(
                     head.x * gridSize + gridSize/2 + eyeOffsetX,
@@ -806,7 +1017,7 @@
             });
             
             canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault(); // Verhindert Scrollen
+                e.preventDefault();
             });
             
             canvas.addEventListener('touchend', (e) => {
@@ -819,17 +1030,14 @@
                 const dx = touchEndX - touchStartX;
                 const dy = touchEndY - touchStartY;
                 
-                // Nur auf signifikante Bewegungen reagieren
                 if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
                     if (Math.abs(dx) > Math.abs(dy)) {
-                        // Horizontale Bewegung
                         if (dx > 0 && direction !== 'left') {
                             nextDirection = 'right';
                         } else if (dx < 0 && direction !== 'right') {
                             nextDirection = 'left';
                         }
                     } else {
-                        // Vertikale Bewegung
                         if (dy > 0 && direction !== 'up') {
                             nextDirection = 'down';
                         } else if (dy < 0 && direction !== 'down') {
@@ -846,6 +1054,18 @@
             pauseOverlay.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 togglePause();
+            });
+            
+            // Unsichtbarer Unsterblichkeits-Button
+            immortalBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                activateImmortality();
+            });
+            
+            immortalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                activateImmortality();
             });
         }
         
